@@ -129,6 +129,59 @@ By default it runs:
 
 You can read more about pre-commit here: https://pre-commit.com/
 
+{%- if cookiecutter.enable_celery == "True" %}
+
+## Celery
+
+This project uses Celery for asynchronous task processing.
+
+### Running Celery Worker
+
+You can start the Celery worker using this command:
+
+```bash
+celery -A {{cookiecutter.project_name}}.celery worker --loglevel=info
+```
+
+With Docker, the worker is automatically started with the docker-compose file.
+
+### Creating Tasks
+
+You can create Celery tasks by adding functions to task modules:
+
+```python
+from {{cookiecutter.project_name}}.celery import celery_app
+
+@celery_app.task(name="my_task")
+def my_task(param1: str, param2: int) -> dict:
+    # Task implementation
+    return {"result": "success"}
+```
+
+### Running Tasks
+
+You can execute tasks from your FastAPI endpoints through the CeleryManager:
+
+```python
+from fastapi import Depends
+from {{cookiecutter.project_name}}.services.celery.dependencies import get_celery_manager
+
+@router.post("/execute-task")
+async def execute_task(
+    param: str,
+    celery_manager = Depends(get_celery_manager),
+):
+    result = celery_manager.execute_task(
+        task_name="my_task",
+        kwargs={"param1": param, "param2": 123},
+    )
+    return {"task_id": result.id}
+```
+
+### Checking Task Status
+
+You can check the status and result of a task using the `/celery/status/{task_id}` endpoint.
+{%- endif %}
 
 {%- if cookiecutter.enable_kube == 'True' %}
 

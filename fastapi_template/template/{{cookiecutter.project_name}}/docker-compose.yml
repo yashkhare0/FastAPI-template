@@ -85,6 +85,19 @@ services:
       - {{cookiecutter.project_name}}.tkq:broker
   {%- endif %}
 
+  {%- if cookiecutter.enable_celery == "True" %}
+
+  celery-worker:
+    <<: *main_app
+    labels: []
+    command:
+      - celery
+      - -A
+      - {{cookiecutter.project_name}}.celery
+      - worker
+      - --loglevel=info
+  {%- endif %}
+
   {%- if cookiecutter.db_info.name == "postgresql" %}
 
   db:

@@ -416,6 +416,19 @@ features_menu = MultiselectMenuModel(
             ),
         ),
         MenuEntry(
+            code="enable_celery",
+            cli_name="celery",
+            user_view="Add Celery support",
+            description=(
+                "{what} is a distributed task queue.\n"
+                "It's perfect for {purpose1} and {purpose2}.".format(
+                    what=colored("Celery", color="green"),
+                    purpose1=colored("background processing", color="cyan"),
+                    purpose2=colored("asynchronous task execution", color="cyan"),
+                )
+            ),
+        ),
+        MenuEntry(
             code="enable_migrations",
             cli_name="migrations",
             user_view="Add Migrations",

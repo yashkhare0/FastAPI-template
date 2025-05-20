@@ -29,6 +29,11 @@ from {{cookiecutter.project_name}}.services.kafka.lifespan import (init_kafka,
 
 {%- endif %}
 
+{%- if cookiecutter.enable_celery == "True" %}
+from {{cookiecutter.project_name}}.services.celery.manager import default_manager
+
+{%- endif %}
+
 {%- if cookiecutter.enable_taskiq == "True" %}
 from {{cookiecutter.project_name}}.tkq import broker
 
@@ -267,6 +272,17 @@ def setup_prometheus(app: FastAPI) -> None:  # pragma: no cover
     ).expose(app, should_gzip=True, name="prometheus_metrics")
 {%- endif %}
 
+{%- if cookiecutter.enable_celery == "True" %}
+def setup_celery(app: FastAPI) -> None:  # pragma: no cover
+    """
+    Initializes Celery integration.
+
+    :param app: current application.
+    """
+    # Store the Celery manager in the app state for access in other parts of the application
+    app.state.celery_manager = default_manager
+{%- endif %}
+
 
 @asynccontextmanager
 async def lifespan_setup(app: FastAPI) -> AsyncGenerator[None, None]:  # pragma: no cover
@@ -308,6 +324,9 @@ async def lifespan_setup(app: FastAPI) -> AsyncGenerator[None, None]:  # pragma:
     {%- endif %}
     {%- if cookiecutter.enable_kafka == "True" %}
     await init_kafka(app)
+    {%- endif %}
+    {%- if cookiecutter.enable_celery == "True" %}
+    setup_celery(app)
     {%- endif %}
     {%- if cookiecutter.prometheus_enabled == "True" %}
     setup_prometheus(app)

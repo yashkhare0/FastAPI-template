@@ -24,6 +24,10 @@ from {{cookiecutter.project_name}}.web.api import rabbit
 from {{cookiecutter.project_name}}.web.api import kafka
 
 {%- endif %}
+{%- if cookiecutter.enable_celery == "True" %}
+from {{cookiecutter.project_name}}.web.api import celery
+
+{%- endif %}
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.self_hosted_swagger == "True" %}
@@ -54,6 +58,9 @@ api_router.include_router(rabbit.router, prefix="/rabbit", tags=["rabbit"])
 {%- endif %}
 {%- if cookiecutter.enable_kafka == "True" %}
 api_router.include_router(kafka.router, prefix="/kafka", tags=["kafka"])
+{%- endif %}
+{%- if cookiecutter.enable_celery == "True" %}
+api_router.include_router(celery.router, prefix="/celery", tags=["celery"])
 {%- endif %}
 {%- endif %}
 {%- endif %}

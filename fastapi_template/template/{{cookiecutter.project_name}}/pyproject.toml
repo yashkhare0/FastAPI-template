@@ -156,6 +156,9 @@ taskiq-fastapi = "^0.3.3"
     {%- endif %}
 
 {%- endif %}
+{%- if cookiecutter.enable_celery == "True" %}
+celery = "^5.3.5"
+{%- endif %}
 
 
 [tool.poetry.group.dev.dependencies]
